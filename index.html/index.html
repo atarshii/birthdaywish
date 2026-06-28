@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Sanjana ✨</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Canvas Confetti for the celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;800&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background 1.5s ease-in-out, color 0.6s ease-in-out;
+            overflow-x: hidden;
+        }
+
+        #fullscreenPhotoSection {
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- PILE EFFECT STYLING --- */
+        .photo-pile-container {
+            position: relative;
+            height: 460px;
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        .pile-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            padding: 12px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, z-index 0.6s;
+            cursor: pointer;
+            color: #1f2937;
+        }
+
+        .pile-card:nth-child(1) { transform: rotate(0deg) translate(0px, 0px); z-index: 3; }
+        .pile-card:nth-child(2) { transform: rotate(6deg) translate(25px, 8px); z-index: 2; }
+        .pile-card:nth-child(3) { transform: rotate(-6deg) translate(-25px, 15px); z-index: 1; }
+
+        .photo-pile-container:hover .pile-card:nth-child(1) { transform: rotate(-5deg) translate(-35px, -5px); }
+        .photo-pile-container:hover .pile-card:nth-child(2) { transform: rotate(0deg) translate(0px, 0px); }
+        .photo-pile-container:hover .pile-card:nth-child(3) { transform: rotate(5deg) translate(35px, 5px); }
+
+        .pile-card.dispatched {
+            transform: translateX(130%) rotate(25deg) !important;
+            opacity: 0;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .shake-effect {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Custom smooth transition animations */
+        .fade-scale-out {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .fade-scale-in {
+            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.85) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body id="bodyTheme" class="min-h-screen bg-gradient-to-tr from-orange-100 via-pink-100 to-rose-200 text-slate-800 antialiased">
+
+    <!-- FIXED: Hero/Entry Section with Precise Stack Layering -->
+    <header id="heroContainer" class="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+        
+        <!-- Background Layer (Strictly Background) -->
+        <div id="heroBgImage" class="absolute inset-0 w-full h-full z-0 transition-all duration-1000">
+            <img src="sanjana2.jpg" alt="Aesthetic Background" class="w-full h-full object-cover blur-md scale-105 brightness-75">
+            <!-- Overlay to smooth the text contrast -->
+            <div class="absolute inset-0 bg-white/20 backdrop-blur-[2px]"></div>
+        </div>
+        
+        <!-- Content Layer (Strictly Above Background via z-10 and relative) -->
+        <div class="relative z-10 flex flex-col items-center justify-center space-y-4 max-w-lg">
+            <div id="heroEmoji" class="text-6xl transition-transform duration-300">✨</div>
+            
+            <h1 id="mainHeading" class="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-indigo-600 tracking-tight drop-shadow-md transition-all duration-700 py-2">
+                Hey Sanjana
+            </h1>
+            
+            <p id="subHeading" class="text-lg md:text-xl text-slate-800 font-semibold transition-all duration-700 drop-shadow-sm px-2">
+                I have a little surprise waiting for you. Press the button below!
+            </p>
+            
+            <button id="surpriseButton" onclick="revealCelebration()" class="mt-4 px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-full shadow-lg shadow-pink-500/30 hover:shadow-pink-400/50 transform hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+                Press for a Surprise! 🎉
+            </button>
+        </div>
+
+        <!-- Scroll Arrow Layer -->
+        <div id="scrollArrow" class="hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce text-2xl font-bold text-pink-400 drop-shadow-md">
+            ↓ Scroll Down Niche Niche ↓
+        </div>
+    </header>
+
+    <!-- Fullscreen Theme Image Section -->
+    <section id="fullscreenPhotoSection" class="hidden h-screen w-full relative flex items-center justify-center overflow-hidden border-b border-white/10 opacity-0">
+        <img src="sanjana1.jpg" alt="Sanjana Main Hero Portrait" class="absolute inset-0 w-full h-full object-cover filter brightness-50">
+        <div class="relative z-10 text-center px-4 max-w-2xl">
+            <h2 class="text-4xl md:text-6xl font-extrabold text-amber-300 drop-shadow-2xl mb-4">The Star of the Day ✨</h2>
+            <p class="text-lg md:text-xl text-white/90 font-light drop-shadow">Some people just make the world brighter by being in it.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="hidden max-w-5xl mx-auto px-4 py-24 space-y-32">
+
+        <!-- STAGGERED PILE PHOTO SECTION WITH BACKGROUND PHOTO WRAPPER -->
+        <section id="photoGallery" class="reveal-on-scroll relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-2xl border border-white/10 flex flex-col items-center min-h-[650px] justify-center">
+            <img src="sanjana2.jpg" alt="Sanjana Gallery Background" class="absolute inset-0 w-full h-full object-cover filter brightness-25 blur-sm scale-105 pointer-events-none">
+            
+            <div class="relative z-10 w-full text-center flex flex-col items-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-300 mb-2 flex items-center justify-center gap-2 drop-shadow-md">
+                    📸 Your Memory Stack
+                </h2>
+                <p class="text-pink-200/80 text-xs mb-14 text-center max-w-xs font-light tracking-wide drop-shadow-sm">
+                    Tap the top card to shuffle and reveal the photos hidden beneath!
+                </p>
+                
+                <div class="photo-pile-container">
+                    <div class="pile-card" onclick="shuffleCard(this)">
+                        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500" alt="Memory 1" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Always Smiling 🌸</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pile-card" onclick="shuffleCard(this)">
+                        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500" alt="Memory 2" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Best Times 💫</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+
+                    <div class="pile-card" onclick="shuffleCard(this)">
+                        <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500" alt="Memory 3" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Unforgettable Day ✨</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DYNAMIC QUIZ & SURPRISE CONTAINER -->
+        <section id="interactiveZone" class="reveal-on-scroll max-w-md mx-auto min-h-[340px] flex flex-col justify-center relative">
+            
+            <!-- 1. Pure Quiz State -->
+            <div id="quizBlock" class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10 text-center space-y-4 transition-all duration-500 w-full">
+                <h2 class="text-2xl md:text-3xl font-bold text-amber-300 mb-2 flex items-center justify-center gap-2">
+                    ❓ Quick Trivia
+                </h2>
+                <p class="text-xs text-pink-200/50 mb-4 font-light">A small question for you</p>
+                <p class="text-lg text-white font-medium tracking-wide">
+                    Who is the most beautiful girl in the world? 👑
+                </p>
+                <input type="text" id="quizInput" placeholder="Type her name here..." class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 font-semibold text-center focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all">
+                <button onclick="checkQuizAnswer()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-xl shadow-md hover:from-pink-600 hover:to-rose-600 transform hover:-translate-y-0.5 transition-all duration-150 cursor-pointer">
+                    Submit Answer 💖
+                </button>
+                <p id="quizFeedback" class="text-sm font-semibold mt-3 text-amber-400 min-h-[20px]"></p>
+            </div>
+
+            <!-- 2. Playful Retry State -->
+            <div id="retryBlock" class="hidden bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10 text-center space-y-6 w-full fade-scale-in">
+                <p class="text-xl text-rose-400 font-bold tracking-wide px-2 drop-shadow-md">
+                    Are hatt pagli kabhi mirror nhi dekha kya 🤦‍♂️💖
+                </p>
+                <button onclick="resetQuiz()" class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full text-sm tracking-wider border border-white/30 hover:border-white/50 shadow-md transition-all duration-150 cursor-pointer uppercase">
+                    🔄 Retry
+                </button>
+            </div>
+
+            <!-- 3. NAVEEN'S SURPRISE GIFT BLOCK -->
+            <div id="surpriseGiftBlock" class="hidden bg-gradient-to-b from-rose-500/30 to-purple-600/30 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border-2 border-pink-400/50 text-center space-y-5 w-full">
+                <div class="text-6xl animate-bounce">🎁</div>
+                <h3 class="text-2xl font-extrabold text-amber-300 drop-shadow">Sahi Jawab Hai! 👑</h3>
+                <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto"></div>
+                <p class="text-lg text-white font-semibold leading-relaxed tracking-wide px-1">
+                    Aur Naveen ke paas aapke liye ek aur <span class="text-pink-300 underline decoration-wavy font-bold">surprise gift</span> hai... 😉✨
+                </p>
+                <p class="text-xs text-pink-200/60 font-light italic">
+                    (Ask him for it right now!)
+                </p>
+            </div>
+
+        </section>
+
+        <!-- Birthday Wishes Section -->
+        <section class="reveal-on-scroll bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-300 mb-10 flex items-center justify-center gap-2">
+                💌 Notes for You
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <p class="text-pink-100 italic text-lg">"Happy birthday Sanjana! May your year be as bright and wonderful as your vibe."</p>
+                    <p class="mt-4 text-right font-bold text-amber-300">— Friend 1</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <p class="text-pink-100 italic text-lg">"Wishing you endless laughter, joy, and peace today. Have an amazing birthday!"</p>
+                    <p class="mt-4 text-right font-bold text-amber-300">— Friend 2</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="footerText" class="text-center py-12 text-sm text-slate-400 transition-colors duration-500">
+        Made with ❤️ for Sanjana | 2026
+    </footer>
+
+    <!-- JavaScript code -->
+    <script {isSafeContext: true}>
+        let zIndexCounter = 5; 
+        
+        function shuffleCard(card) {
+            if (card.classList.contains('dispatched')) return;
+            card.classList.add('dispatched');
+            setTimeout(() => {
+                zIndexCounter--;
+                card.style.zIndex = zIndexCounter;
+                card.classList.remove('dispatched');
+            }, 500);
+        }
+
+        function checkQuizAnswer() {
+            const inputField = document.getElementById('quizInput');
+            const feedback = document.getElementById('quizFeedback');
+            
+            const quizBlock = document.getElementById('quizBlock');
+            const retryBlock = document.getElementById('retryBlock');
+            const surpriseGiftBlock = document.getElementById('surpriseGiftBlock');
+            const interactiveZone = document.getElementById('interactiveZone');
+            
+            const userAnswer = inputField.value.trim().toLowerCase();
+
+            interactiveZone.classList.remove('shake-effect');
+
+            if (userAnswer === "") {
+                feedback.innerText = "Kuch toh likho! 😂";
+                return;
+            }
+
+            const correctAnswers = ["sanjana", "me", "i", "myself", "i am", "me!"];
+
+            if (correctAnswers.includes(userAnswer)) {
+                quizBlock.classList.add('fade-scale-out');
+                
+                setTimeout(() => {
+                    quizBlock.classList.add('hidden');
+                    surpriseGiftBlock.classList.remove('hidden');
+                    surpriseGiftBlock.classList.add('fade-scale-in');
+                    
+                    let end = Date.now() + (2 * 1000);
+                    (function frame() {
+                        confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff69b4', '#ff1493', '#ffc0cb'] });
+                        confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff69b4', '#ff1493', '#ffc0cb'] });
+                        if (Date.now() < end) { requestAnimationFrame(frame); }
+                    }());
+                }, 500);
+
+            } else {
+                quizBlock.classList.add('hidden');
+                retryBlock.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    interactiveZone.style.animation = 'none';
+                    interactiveZone.offsetHeight; 
+                    interactiveZone.classList.add('shake-effect');
+                }, 10);
+            }
+        }
+
+        function resetQuiz() {
+            const quizBlock = document.getElementById('quizBlock');
+            const retryBlock = document.getElementById('retryBlock');
+            const inputField = document.getElementById('quizInput');
+            const feedback = document.getElementById('quizFeedback');
+
+            inputField.value = "";
+            feedback.innerText = "";
+            
+            quizBlock.classList.remove('fade-scale-out', 'hidden');
+            retryBlock.classList.add('hidden');
+            inputField.focus();
+        }
+
+        function revealCelebration() {
+            const body = document.getElementById('bodyTheme');
+            const hero = document.getElementById('heroContainer');
+            const heading = document.getElementById('mainHeading');
+            const subHeading = document.getElementById('subHeading');
+            const emoji = document.getElementById('heroEmoji');
+            const button = document.getElementById('surpriseButton');
+            
+            const fullscreenSection = document.getElementById('fullscreenPhotoSection');
+            const mainContent = document.getElementById('mainContent');
+            const arrow = document.getElementById('scrollArrow');
+            const footer = document.getElementById('footerText');
+            const heroBgImage = document.getElementById('heroBgImage');
+
+            if(heroBgImage) {
+                heroBgImage.style.opacity = "0.15";
+                heroBgImage.style.transform = "scale(1.1)";
+            }
+
+            body.classList.remove('from-orange-100', 'via-pink-100', 'to-rose-200', 'text-slate-800');
+            body.classList.add('from-indigo-950', 'via-purple-950', 'to-neutral-950', 'text-white');
+
+            hero.classList.add('bg-black/60');
+
+            heading.innerText = "Happy Birthday, Sanjana! 🎈";
+            heading.classList.remove('from-pink-600', 'to-indigo-600');
+            heading.classList.add('bg-gradient-to-r', 'from-amber-300', 'via-pink-400', 'to-rose-400');
+            
+            subHeading.innerText = "Scroll down to witness a glimpse of your wonderful journey...";
+            subHeading.classList.remove('text-slate-800');
+            subHeading.classList.add('text-pink-100');
+
+            emoji.innerText = "🎂";
+            emoji.classList.add('animate-bounce');
+
+            footer.classList.remove('text-slate-400');
+            footer.classList.add('text-pink-200/40');
+
+            button.innerText = "Surprise Activated! ✨";
+            button.classList.remove('from-pink-500', 'to-rose-500', 'hover:from-pink-600', 'hover:to-rose-600');
+            button.classList.add('bg-white/10', 'text-white/40', 'cursor-not-allowed');
+            button.disabled = true;
+
+            fullscreenSection.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
+            arrow.classList.remove('hidden');
+            
+            setTimeout(() => {
+                fullscreenSection.style.opacity = "1";
+            }, 100);
+
+            confetti({ particleCount: 150, spread: 80, origin: { x: 0.1, y: 0.7 } });
+            confetti({ particleCount: 150, spread: 80, origin: { x: 0.9, y: 0.7 } });
+
+            initScrollObserver();
+        }
+
+        function initScrollObserver() {
+            const observerOptions = {
+                root: null,
+                threshold: 0.12
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        if(entry.target.id === 'photoGallery') {
+                            confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎈</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Canvas Confetti for the celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fef08a 0%, #fbcfe8 100%);
+        }
+
+        /* Define the reveal animation */
+        @keyframes revealGallery {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* This class triggers the animation */
+        .gallery-reveal {
+            animation: revealGallery 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 antialiased">
+
+    <!-- Hero Section -->
+    <header class="flex flex-col items-center justify-center text-center px-4 py-20 bg-white/40 backdrop-blur-md shadow-sm border-b border-white/20">
+        <div class="animate-bounce text-6xl mb-4">🎂</div>
+        <h1 class="text-5xl md:text-7xl font-extrabold text-pink-600 tracking-tight drop-shadow-sm">
+            Happy Birthday, [Name]!
+        </h1>
+        <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-md font-light">
+            Cheers to another incredible year! We made this digital corner just for you.
+        </p>
+        <!-- The ID 'surpriseButton' allows JavaScript to find this button -->
+        <button id="surpriseButton" onclick="revealCelebration()" class="mt-8 px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-pink-300/50 transform hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+            Press for a Surprise! 🎉
+        </button>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- Hidden Gallery Section: starts 'hidden' and 'opacity-0' -->
+        <!-- The ID 'photoGallery' allows JavaScript to control this section -->
+        <section id="photoGallery" class="hidden opacity-0 bg-white/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center gap-2">
+                📸 Memory Lane
+            </h2>
+            <!-- Photo Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Photo Card 1 -->
+                <div class="bg-white p-3 rounded-2xl shadow-md transform hover:rotate-2 transition-transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500" alt="Memory 1" class="w-full h-48 object-cover rounded-xl">
+                    <p class="mt-3 text-center text-sm font-medium text-gray-600">That unforgettable road trip! 🚗</p>
+                </div>
+                <!-- Photo Card 2 -->
+                <div class="bg-white p-3 rounded-2xl shadow-md transform hover:-rotate-2 transition-transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500" alt="Memory 2" class="w-full h-48 object-cover rounded-xl">
+                    <p class="mt-3 text-center text-sm font-medium text-gray-600">Concert night chaos 🎸</p>
+                </div>
+                <!-- Photo Card 3 -->
+                <div class="bg-white p-3 rounded-2xl shadow-md transform hover:rotate-1 transition-transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500" alt="Memory 3" class="w-full h-48 object-cover rounded-xl">
+                    <p class="mt-3 text-center text-sm font-medium text-gray-600">Late night pizza runs 🍕</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Birthday Wishes Section (always visible) -->
+        <section class="bg-white/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center gap-2">
+                💌 Messages From the Crew
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-pink-50/50 p-6 rounded-2xl border border-pink-100">
+                    <p class="text-gray-700 italic">"Happy birthday to my absolute favorite human! Have the best day ever!"</p>
+                    <p class="mt-4 text-right font-bold text-pink-600">— Sarah</p>
+                </div>
+                <div class="bg-amber-50/50 p-6 rounded-2xl border border-amber-100">
+                    <p class="text-gray-700 italic">"Wishing you a year ahead filled with crazy adventures and dynamic growth. You rock!"</p>
+                    <p class="mt-4 text-right font-bold text-amber-600">— Alex</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-sm text-gray-500">
+        Made with ❤️ by [Your Name] | 2026
+    </footer>
+
+    <!-- JavaScript for Dynamic Interaction -->
+    <script>
+        // Define the main celebration function
+        function revealCelebration() {
+            // 1. Find the hidden gallery section using its ID
+            const gallery = document.getElementById('photoGallery');
+            // 2. Find the button using its ID
+            const button = document.getElementById('surpriseButton');
+
+            // 3. Update the button appearance and disable it
+            button.innerText = "Surprise Activated! ✨";
+            button.classList.remove('bg-pink-500', 'hover:bg-pink-600');
+            button.classList.add('bg-gray-400', 'cursor-not-allowed');
+            button.disabled = true;
+
+            // 4. Reveal the gallery
+            gallery.classList.remove('hidden'); // Make it exist in the layout
+            gallery.classList.add('gallery-reveal'); // Trigger the smooth animation
+
+            // 5. Fire multiple confetti bursts for maximum effect
+            // Left burst
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { x: 0.1, y: 0.7 }
+            });
+            // Right burst
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { x: 0.9, y: 0.7 }
+            });
+            // Final center burst
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    spread: 100,
+                    origin: { x: 0.5, y: 0.5 }
+                });
+            }, 300);
+        }
+    </script>
+</body>
+</html>
