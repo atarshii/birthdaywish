@@ -9,11 +9,17 @@
     <!-- Canvas Confetti for the celebration effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;800&family=Playfair+Display:ital,wght@1,500&display=swap');
+        
         body {
             font-family: 'Poppins', sans-serif;
             transition: background 1.5s ease-in-out, color 0.6s ease-in-out;
             overflow-x: hidden;
+        }
+
+        .cursive-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
         }
 
         #fullscreenPhotoSection {
@@ -53,19 +59,29 @@
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, z-index 0.6s;
             cursor: pointer;
             color: #1f2937;
+            user-select: none;
         }
 
-        .pile-card:nth-child(1) { transform: rotate(0deg) translate(0px, 0px); z-index: 3; }
-        .pile-card:nth-child(2) { transform: rotate(6deg) translate(25px, 8px); z-index: 2; }
-        .pile-card:nth-child(3) { transform: rotate(-6deg) translate(-25px, 15px); z-index: 1; }
-
-        .photo-pile-container:hover .pile-card:nth-child(1) { transform: rotate(-5deg) translate(-35px, -5px); }
-        .photo-pile-container:hover .pile-card:nth-child(2) { transform: rotate(0deg) translate(0px, 0px); }
-        .photo-pile-container:hover .pile-card:nth-child(3) { transform: rotate(5deg) translate(35px, 5px); }
-
         .pile-card.dispatched {
-            transform: translateX(130%) rotate(25deg) !important;
+            transform: translateX(140%) rotate(35deg) !important;
             opacity: 0;
+        }
+
+        /* ENVELOPE STYLING */
+        .envelope-wrapper {
+            cursor: pointer;
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+        .envelope-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope-card.open {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(244, 63, 94, 0.4);
         }
 
         @keyframes shake {
@@ -77,7 +93,6 @@
             animation: shake 0.4s ease-in-out;
         }
 
-        /* Custom smooth transition animations */
         .fade-scale-out {
             opacity: 0;
             transform: scale(0.9);
@@ -94,56 +109,55 @@
         }
     </style>
 </head>
-<body id="bodyTheme" class="min-h-screen bg-gradient-to-tr from-orange-100 via-pink-100 to-rose-200 text-slate-800 antialiased">
+<body id="bodyTheme" class="min-h-screen bg-gradient-to-tr from-stone-100 via-rose-50 to-amber-100 text-slate-800 antialiased">
 
-    <!-- FIXED: Hero/Entry Section with Precise Stack Layering -->
+    <!-- Hero/Entry Section with Layered Stack -->
     <header id="heroContainer" class="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
         
-        <!-- Background Layer (Strictly Background) -->
+        <!-- Background Layer -->
         <div id="heroBgImage" class="absolute inset-0 w-full h-full z-0 transition-all duration-1000">
-            <img src="sanjana2.jpg" alt="Aesthetic Background" class="w-full h-full object-cover blur-md scale-105 brightness-75">
-            <!-- Overlay to smooth the text contrast -->
-            <div class="absolute inset-0 bg-white/20 backdrop-blur-[2px]"></div>
+            <img src="s5.jpg" alt="Aesthetic Background" class="w-full h-full object-cover blur-md scale-105 brightness-75">
+            <div class="absolute inset-0 bg-black/10 backdrop-blur-[1px]"></div>
         </div>
         
-        <!-- Content Layer (Strictly Above Background via z-10 and relative) -->
+        <!-- Content Layer -->
         <div class="relative z-10 flex flex-col items-center justify-center space-y-4 max-w-lg">
             <div id="heroEmoji" class="text-6xl transition-transform duration-300">✨</div>
             
-            <h1 id="mainHeading" class="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-indigo-600 tracking-tight drop-shadow-md transition-all duration-700 py-2">
+            <h1 id="mainHeading" class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-amber-800 tracking-tight drop-shadow-sm transition-all duration-700 py-2">
                 Hey Sanjana
             </h1>
             
-            <p id="subHeading" class="text-lg md:text-xl text-slate-800 font-semibold transition-all duration-700 drop-shadow-sm px-2">
-                I have a little surprise waiting for you. Press the button below!
+            <p id="subHeading" class="text-md md:text-lg text-stone-800 font-medium transition-all duration-700 drop-shadow-sm px-4 leading-relaxed">
+                I know things have been a bit quiet lately... but today is a special day, and I have a little surprise waiting for you. Press below.
             </p>
             
-            <button id="surpriseButton" onclick="revealCelebration()" class="mt-4 px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-full shadow-lg shadow-pink-500/30 hover:shadow-pink-400/50 transform hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
-                Press for a Surprise! 🎉
+            <button id="surpriseButton" onclick="revealCelebration()" class="mt-4 px-8 py-3 bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white font-bold rounded-full shadow-lg shadow-rose-500/20 transform hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+                Unlock Surprise ✨
             </button>
         </div>
 
-        <!-- Scroll Arrow Layer -->
-        <div id="scrollArrow" class="hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce text-2xl font-bold text-pink-400 drop-shadow-md">
+        <!-- Scroll Arrow -->
+        <div id="scrollArrow" class="hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce text-2xl font-bold text-rose-400 drop-shadow-md">
             ↓ Scroll Down Niche Niche ↓
         </div>
     </header>
 
-    <!-- Fullscreen Theme Image Section -->
+    <!-- Fullscreen Transition Image -->
     <section id="fullscreenPhotoSection" class="hidden h-screen w-full relative flex items-center justify-center overflow-hidden border-b border-white/10 opacity-0">
-        <img src="sanjana1.jpg" alt="Sanjana Main Hero Portrait" class="absolute inset-0 w-full h-full object-cover filter brightness-50">
+        <img src="s8.jpg" alt="Sanjana Portrait" class="absolute inset-0 w-full h-full object-cover filter brightness-45">
         <div class="relative z-10 text-center px-4 max-w-2xl">
             <h2 class="text-4xl md:text-6xl font-extrabold text-amber-300 drop-shadow-2xl mb-4">The Star of the Day ✨</h2>
-            <p class="text-lg md:text-xl text-white/90 font-light drop-shadow">Some people just make the world brighter by being in it.</p>
+            <p class="text-lg md:text-xl text-white/90 font-light drop-shadow">Regardless of everything, some lines and moments never change.</p>
         </div>
     </section>
 
     <!-- Main Content -->
     <main id="mainContent" class="hidden max-w-5xl mx-auto px-4 py-24 space-y-32">
 
-        <!-- STAGGERED PILE PHOTO SECTION WITH BACKGROUND PHOTO WRAPPER -->
+        <!-- PHOTO MEMORY PILE -->
         <section id="photoGallery" class="reveal-on-scroll relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-2xl border border-white/10 flex flex-col items-center min-h-[650px] justify-center">
-            <img src="sanjana2.jpg" alt="Sanjana Gallery Background" class="absolute inset-0 w-full h-full object-cover filter brightness-25 blur-sm scale-105 pointer-events-none">
+            <img src="s7.jpeg" alt="Gallery Background" class="absolute inset-0 w-full h-full object-cover filter brightness-25 blur-sm scale-105 pointer-events-none">
             
             <div class="relative z-10 w-full text-center flex flex-col items-center">
                 <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-300 mb-2 flex items-center justify-center gap-2 drop-shadow-md">
@@ -154,28 +168,197 @@
                 </p>
                 
                 <div class="photo-pile-container">
-                    <div class="pile-card" onclick="shuffleCard(this)">
-                        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500" alt="Memory 1" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                    <!-- Photo 1 -->
+                    <div class="pile-card" style="transform: rotate(0deg); z-index: 8;" onclick="shuffleCard(this)">
+                        <img src="s4.jpg" alt="Memory 1" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
                             <p class="font-bold text-purple-900">Always Smiling 🌸</p>
                             <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
                         </div>
                     </div>
                     
-                    <div class="pile-card" onclick="shuffleCard(this)">
-                        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500" alt="Memory 2" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                    <!-- Photo 2 -->
+                    <div class="pile-card" style="transform: rotate(4deg) translate(8px, 4px); z-index: 7;" onclick="shuffleCard(this)">
+                        <img src="s11.jpeg" alt="Memory 2" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
                             <p class="font-bold text-purple-900">Best Times 💫</p>
                             <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
                         </div>
                     </div>
 
-                    <div class="pile-card" onclick="shuffleCard(this)">
-                        <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500" alt="Memory 3" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                    <!-- Photo 3 -->
+                    <div class="pile-card" style="transform: rotate(-5deg) translate(-10px, 6px); z-index: 6;" onclick="shuffleCard(this)">
+                        <img src="s12.jpeg" alt="Memory 3" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
                             <p class="font-bold text-purple-900">Unforgettable Day ✨</p>
                             <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
                         </div>
+                    </div>
+
+                    <!-- Photo 4 -->
+                    <div class="pile-card" style="transform: rotate(3deg) translate(6px, 10px); z-index: 5;" onclick="shuffleCard(this)">
+                        <img src="s15.jpg" alt="Memory 4" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Little Moments ❤️</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 5 -->
+                    <div class="pile-card" style="transform: rotate(-3deg) translate(-6px, 12px); z-index: 4;" onclick="shuffleCard(this)">
+                        <img src="s14.jpeg" alt="Memory 5" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Countless Laughs 🌟</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 6 -->
+                    <div class="pile-card" style="transform: rotate(5deg) translate(12px, 8px); z-index: 3;" onclick="shuffleCard(this)">
+                        <img src="s13.jpeg" alt="Memory 6" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">The Comfort Zone 🕊️</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 7 -->
+                    <div class="pile-card" style="transform: rotate(-4deg) translate(-12px, 14px); z-index: 2;" onclick="shuffleCard(this)">
+                        <img src="s5.jpg" alt="Memory 7" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Pure Vibe ✨</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 8 -->
+                    <div class="pile-card" style="transform: rotate(2deg) translate(2px, 16px); z-index: 1;" onclick="shuffleCard(this)">
+                        <img src="s7.jpeg" alt="Memory 8" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
+                        <div class="mt-4 text-center">
+                            <p class="font-bold text-purple-900">Our Story 📖</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Tap to shuffle →</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CINEMATIC COLLAGE SECTION -->
+        <section class="reveal-on-scroll space-y-6">
+            <div class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-amber-300 mb-2 drop-shadow-md">
+                    🎞️ Our Aesthetic Moodboard
+                </h2>
+                <p class="text-stone-400 text-sm max-w-sm mx-auto font-light">
+                    A collection of some beautiful and unspoken chapters.
+                </p>
+            </div>
+
+            <!-- Bento Style Mosaic Collage Section with Background Photo -->
+            <div class="relative w-full rounded-3xl overflow-hidden bg-cover bg-center p-6 md:p-10 shadow-2xl border border-white/5" 
+                 style="background-image: url('s4.jpg');">
+                
+                <!-- Background Dark Blur Overlay -->
+                <div class="absolute inset-0 bg-neutral-950/80 backdrop-blur-md z-0"></div>
+
+                <!-- Main Content Grid -->
+                <div class="relative z-10">
+                    
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl md:text-3xl font-serif text-amber-100/90 tracking-wide">Kuch Unkahe Pal</h3>
+                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-amber-200/50 to-transparent mx-auto mt-2"></div>
+                    </div>
+
+                    <!-- Grid Container -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[220px] md:auto-rows-[280px]">
+                        
+                        <!-- Collage Photo 1 (Big Featured Card) -->
+                        <div class="relative col-span-2 row-span-2 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s7.jpeg" alt="Collage 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <p class="text-amber-200 text-sm font-medium">Capture the warmth ✨</p>
+                            </div>
+                        </div>
+
+                        <!-- Collage Photo 2 (Vertical Card) -->
+                        <div class="relative col-span-1 row-span-2 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s10.jpg" alt="Collage 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <p class="text-amber-200 text-sm font-medium">Unspoken lines 🕊️</p>
+                            </div>
+                        </div>
+
+                        <!-- Collage Photo 3 (Square Card) -->
+                        <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s5.jpg" alt="Collage 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <p class="text-amber-200 text-sm font-medium">Memories 💫</p>
+                            </div>
+                        </div>
+
+                        <!-- Photo 7 -->
+                        <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s11.jpeg" alt="New Memory 7" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <p class="text-amber-200 text-sm font-medium">Another chapter 📖</p>
+                            </div>
+                        </div>
+
+                        <!-- Collage Photo 4 -->
+                        <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s6.jpeg" alt="Collage 4" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                        </div>
+
+                        <!-- Collage Photo 5 (Horizontal Landscape Card) -->
+                        <div class="relative col-span-2 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s9.jpg" alt="Collage 5" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <p class="text-amber-200 text-sm font-medium">Laughs & Melodies 🎵</p>
+                            </div>
+                        </div>
+
+                        <!-- Collage Photo 6 -->
+                        <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
+                            <img src="s15.jpg" alt="Collage 6" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE APOLOGY & BIRTHDAY ENVELOPE SECTION -->
+        <section class="reveal-on-scroll max-w-lg mx-auto text-center space-y-6">
+            <div class="envelope-wrapper" onclick="toggleEnvelope()">
+                <div id="envelopeCard" class="envelope-card rounded-3xl p-8 shadow-2xl border flex flex-col items-center justify-center space-y-4 min-h-[180px]">
+                    <div id="envelopeEmoji" class="text-5xl transition-transform duration-500">✉️</div>
+                    <h3 id="envelopeTitle" class="text-xl font-bold text-amber-200">A small letter for you...</h3>
+                    <p id="envelopeHint" class="text-xs text-white/40 italic">(Click to open the note)</p>
+                </div>
+            </div>
+            
+            <!-- Hidden Letter Content with Background Photo -->
+            <!-- Note: 's12.jpeg' ki jagah aap koi bhi preferred deep/moody image path de sakte hain -->
+            <div id="letterContent" class="hidden relative max-w-md mx-auto bg-cover bg-center border border-white/10 rounded-3xl overflow-hidden text-left shadow-xl fade-scale-in"
+                 style="background-image: url('s12.jpeg');">
+                
+                <!-- Dark Overlay for readability inside the letter -->
+                <div class="absolute inset-0 bg-neutral-950/85 backdrop-blur-sm z-0"></div>
+                
+                <!-- Letter Inner Content Layer -->
+                <div class="relative z-10 p-8 space-y-4 flex flex-col">
+                    <span class="text-xs tracking-widest text-rose-300 uppercase font-bold">Dear Sanjana,</span>
+                    <p class="text-white/90 text-sm leading-relaxed">
+                        Happy Birthday! I hope this day brings you all the smiles and warmth you deserve. 
+                    </p>
+                    <p class="text-white/90 text-sm leading-relaxed">
+                        Sahi kahu toh, mujhe sach mein nahi pata ki mujhse kahan aur kya galti hui hai jis wajah se tum naraz ho... par tumhari is khamoshi se bada koi sach nahi hai. Agar meri kisi bhi baat ya harkat se tumhara dil dukha ho, toh I am genuinely really sorry. 
+                    </p>
+                    <p class="cursive-text text-amber-300 text-base leading-relaxed">
+                        "Pata nahi galti kahan hui, par tumhari is khamoshi se bada koi sach nahi. Birthday par gussa yahin chhod dena, thik hai?"
+                    </p>
+                    <div class="pt-2 text-right">
+                        <span class="text-xs text-rose-300 font-semibold">— Naveen</span>
                     </div>
                 </div>
             </div>
@@ -184,83 +367,111 @@
         <!-- DYNAMIC QUIZ & SURPRISE CONTAINER -->
         <section id="interactiveZone" class="reveal-on-scroll max-w-md mx-auto min-h-[340px] flex flex-col justify-center relative">
             
-            <!-- 1. Pure Quiz State -->
-            <div id="quizBlock" class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10 text-center space-y-4 transition-all duration-500 w-full">
-                <h2 class="text-2xl md:text-3xl font-bold text-amber-300 mb-2 flex items-center justify-center gap-2">
-                    ❓ Quick Trivia
-                </h2>
-                <p class="text-xs text-pink-200/50 mb-4 font-light">A small question for you</p>
-                <p class="text-lg text-white font-medium tracking-wide">
-                    Who is the most beautiful girl in the world? 👑
-                </p>
-                <input type="text" id="quizInput" placeholder="Type her name here..." class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 font-semibold text-center focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all">
-                <button onclick="checkQuizAnswer()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-xl shadow-md hover:from-pink-600 hover:to-rose-600 transform hover:-translate-y-0.5 transition-all duration-150 cursor-pointer">
-                    Submit Answer 💖
-                </button>
-                <p id="quizFeedback" class="text-sm font-semibold mt-3 text-amber-400 min-h-[20px]"></p>
-            </div>
-
-            <!-- 2. Playful Retry State -->
-            <div id="retryBlock" class="hidden bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10 text-center space-y-6 w-full fade-scale-in">
-                <p class="text-xl text-rose-400 font-bold tracking-wide px-2 drop-shadow-md">
-                    Are hatt pagli kabhi mirror nhi dekha kya 🤦‍♂️💖
-                </p>
-                <button onclick="resetQuiz()" class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full text-sm tracking-wider border border-white/30 hover:border-white/50 shadow-md transition-all duration-150 cursor-pointer uppercase">
-                    🔄 Retry
-                </button>
-            </div>
-
-            <!-- 3. NAVEEN'S SURPRISE GIFT BLOCK -->
-            <div id="surpriseGiftBlock" class="hidden bg-gradient-to-b from-rose-500/30 to-purple-600/30 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border-2 border-pink-400/50 text-center space-y-5 w-full">
-                <div class="text-6xl animate-bounce">🎁</div>
-                <h3 class="text-2xl font-extrabold text-amber-300 drop-shadow">Sahi Jawab Hai! 👑</h3>
-                <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto"></div>
-                <p class="text-lg text-white font-semibold leading-relaxed tracking-wide px-1">
-                    Aur Naveen ke paas aapke liye ek aur <span class="text-pink-300 underline decoration-wavy font-bold">surprise gift</span> hai... 😉✨
-                </p>
-                <p class="text-xs text-pink-200/60 font-light italic">
-                    (Ask him for it right now!)
-                </p>
-            </div>
-
-        </section>
-
-        <!-- Birthday Wishes Section -->
-        <section class="reveal-on-scroll bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/10">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-amber-300 mb-10 flex items-center justify-center gap-2">
-                💌 Notes for You
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <p class="text-pink-100 italic text-lg">"Happy birthday Sanjana! May your year be as bright and wonderful as your vibe."</p>
-                    <p class="mt-4 text-right font-bold text-amber-300">— Friend 1</p>
-                </div>
-                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <p class="text-pink-100 italic text-lg">"Wishing you endless laughter, joy, and peace today. Have an amazing birthday!"</p>
-                    <p class="mt-4 text-right font-bold text-amber-300">— Friend 2</p>
+            <!-- 1. Pure Quiz State with Background Photo -->
+            <!-- Note: 's5.jpg' ki jagah aap koi bhi unique background image laga sakte hain -->
+            <div id="quizBlock" class="relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 text-center transition-all duration-500 w-full"
+                 style="background-image: url('s5.jpg');">
+                
+                <!-- Dark Blur Overlay for Quiz content readability -->
+                <div class="absolute inset-0 bg-neutral-950/75 backdrop-blur-sm z-0"></div>
+                
+                <!-- Content Layer -->
+                <div class="relative z-10 p-8 space-y-4 flex flex-col">
+                    <h2 class="text-2xl md:text-3xl font-bold text-amber-300 mb-2 flex items-center justify-center gap-2">
+                        ❓ Quick Trivia
+                    </h2>
+                    <p class="text-xs text-pink-200/50 mb-4 font-light">A small question for you</p>
+                    <p class="text-lg text-white font-medium tracking-wide">
+                        Who is the most beautiful girl in the world? 👑
+                    </p>
+                    <input type="text" id="quizInput" placeholder="Type her name here..." class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 font-semibold text-center focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all">
+                    <button onclick="checkQuizAnswer()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-xl shadow-md hover:from-pink-600 hover:to-rose-600 transform hover:-translate-y-0.5 transition-all duration-150 cursor-pointer">
+                        Submit Answer 💖
+                    </button>
+                    <p id="quizFeedback" class="text-sm font-semibold mt-3 text-amber-400 min-h-[20px]"></p>
                 </div>
             </div>
+
+            <!-- 2. Playful Retry State with Background Photo (Inherits layout for consistency) -->
+            <div id="retryBlock" class="hidden relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 text-center w-full fade-scale-in"
+                 style="background-image: url('s5.jpg');">
+                <div class="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm z-0"></div>
+                <div class="relative z-10 p-8 space-y-6 flex flex-col items-center">
+                    <p class="text-xl text-rose-400 font-bold tracking-wide px-2 drop-shadow-md">
+                        Are hatt pagli kabhi mirror nhi dekha kya 🤦‍♂️💖
+                    </p>
+                    <button onclick="resetQuiz()" class="px-6 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full text-sm tracking-wider border border-white/30 hover:border-white/50 shadow-md transition-all duration-150 cursor-pointer uppercase">
+                        🔄 Retry
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. NAVEEN'S SURPRISE GIFT BLOCK with Background Photo -->
+            <div id="surpriseGiftBlock" class="hidden relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border-2 border-pink-400/50 text-center w-full"
+                 style="background-image: url('s8.jpg');">
+                <div class="absolute inset-0 bg-gradient-to-b from-rose-950/85 to-purple-950/85 backdrop-blur-sm z-0"></div>
+                <div class="relative z-10 p-8 space-y-5 flex flex-col items-center">
+                    <div class="text-6xl animate-bounce">🎁</div>
+                    <h3 class="text-2xl font-extrabold text-amber-300 drop-shadow">Sahi Jawab Hai! 👑</h3>
+                    <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-pink-400 to-transparent mx-auto"></div>
+                    <p class="text-lg text-white font-semibold leading-relaxed tracking-wide px-1">
+                        Aur Naveen ke paas aapke liye ek aur <span class="text-pink-300 underline decoration-wavy font-bold">surprise gift</span> hai... 😉✨
+                    </p>
+                    <p class="text-xs text-pink-200/60 font-light italic">
+                        (Ab gussa thanda karo aur gift maang lo!)
+                    </p>
+                </div>
+            </div>
+
         </section>
 
     </main>
 
     <!-- Footer -->
     <footer id="footerText" class="text-center py-12 text-sm text-slate-400 transition-colors duration-500">
-        Made with ❤️ for Sanjana | 2026
+        Made with ❤️ for Sanjana by Para | 2026
     </footer>
 
     <!-- JavaScript code -->
-    <script {isSafeContext: true}>
-        let zIndexCounter = 5; 
+    <script>
+        // Track lowest z-index dynamically for 8 cards
+        let currentLowestZ = 1; 
         
         function shuffleCard(card) {
             if (card.classList.contains('dispatched')) return;
             card.classList.add('dispatched');
             setTimeout(() => {
-                zIndexCounter--;
-                card.style.zIndex = zIndexCounter;
+                currentLowestZ--;
+                card.style.zIndex = currentLowestZ;
                 card.classList.remove('dispatched');
             }, 500);
+        }
+
+        function toggleEnvelope() {
+            const envelopeCard = document.getElementById('envelopeCard');
+            const envelopeEmoji = document.getElementById('envelopeEmoji');
+            const envelopeTitle = document.getElementById('envelopeTitle');
+            const envelopeHint = document.getElementById('envelopeHint');
+            const letterContent = document.getElementById('letterContent');
+
+            if(letterContent.classList.contains('hidden')) {
+                envelopeCard.classList.add('open');
+                envelopeEmoji.innerText = "📂📩";
+                envelopeEmoji.style.transform = "scale(1.1) rotate(-5deg)";
+                envelopeTitle.innerText = "Letter Opened";
+                envelopeHint.innerText = "(Scroll down to read)";
+                
+                letterContent.classList.remove('hidden');
+                confetti({ particleCount: 30, spread: 40, colors: ['#fda4af', '#fcd34d'] });
+            } else {
+                envelopeCard.classList.remove('open');
+                envelopeEmoji.innerText = "✉️";
+                envelopeEmoji.style.transform = "none";
+                envelopeTitle.innerText = "A small letter for you...";
+                envelopeHint.innerText = "(Click to open the note)";
+                
+                letterContent.classList.add('hidden');
+            }
         }
 
         function checkQuizAnswer() {
@@ -340,32 +551,32 @@
             const heroBgImage = document.getElementById('heroBgImage');
 
             if(heroBgImage) {
-                heroBgImage.style.opacity = "0.15";
+                heroBgImage.style.opacity = "0.12";
                 heroBgImage.style.transform = "scale(1.1)";
             }
 
-            body.classList.remove('from-orange-100', 'via-pink-100', 'to-rose-200', 'text-slate-800');
-            body.classList.add('from-indigo-950', 'via-purple-950', 'to-neutral-950', 'text-white');
+            body.classList.remove('from-stone-100', 'via-rose-50', 'to-amber-100', 'text-slate-800');
+            body.classList.add('from-stone-950', 'via-neutral-900', 'to-neutral-950', 'text-white');
 
             hero.classList.add('bg-black/60');
 
-            heading.innerText = "Happy Birthday, Sanjana! 🎈";
-            heading.classList.remove('from-pink-600', 'to-indigo-600');
-            heading.classList.add('bg-gradient-to-r', 'from-amber-300', 'via-pink-400', 'to-rose-400');
+            heading.innerText = "Happy Birthday Sanjana (Cinderella Ji) 🎈";
+            heading.classList.remove('from-rose-700', 'to-amber-800');
+            heading.classList.add('bg-gradient-to-r', 'from-amber-300', 'via-rose-400', 'to-amber-400');
             
-            subHeading.innerText = "Scroll down to witness a glimpse of your wonderful journey...";
-            subHeading.classList.remove('text-slate-800');
-            subHeading.classList.add('text-pink-100');
+            subHeading.innerText = "Scroll down, everything below is just for you...";
+            subHeading.classList.remove('text-stone-800');
+            subHeading.classList.add('text-stone-300');
 
             emoji.innerText = "🎂";
             emoji.classList.add('animate-bounce');
 
             footer.classList.remove('text-slate-400');
-            footer.classList.add('text-pink-200/40');
+            footer.classList.add('text-white/20');
 
-            button.innerText = "Surprise Activated! ✨";
-            button.classList.remove('from-pink-500', 'to-rose-500', 'hover:from-pink-600', 'hover:to-rose-600');
-            button.classList.add('bg-white/10', 'text-white/40', 'cursor-not-allowed');
+            button.innerText = "Opened ✨";
+            button.classList.remove('from-rose-500', 'to-amber-600', 'hover:from-rose-600', 'hover:to-amber-700');
+            button.classList.add('bg-white/10', 'text-white/30', 'cursor-not-allowed');
             button.disabled = true;
 
             fullscreenSection.classList.remove('hidden');
@@ -376,8 +587,8 @@
                 fullscreenSection.style.opacity = "1";
             }, 100);
 
-            confetti({ particleCount: 150, spread: 80, origin: { x: 0.1, y: 0.7 } });
-            confetti({ particleCount: 150, spread: 80, origin: { x: 0.9, y: 0.7 } });
+            confetti({ particleCount: 120, spread: 80, origin: { x: 0.1, y: 0.7 } });
+            confetti({ particleCount: 120, spread: 80, origin: { x: 0.9, y: 0.7 } });
 
             initScrollObserver();
         }
