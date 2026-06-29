@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Sanjana ✨</title>
-    <!-- Tailwind CSS for styling -->
+    <title>For YOU ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Canvas Confetti for the celebration effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;800&family=Playfair+Display:ital,wght@1,500&display=swap');
@@ -107,20 +105,73 @@
             0% { opacity: 0; transform: scale(0.85) translateY(10px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
+
+        /* --- ADVANCED REALISTIC WAVE VISUALIZER --- */
+        .wave-bar {
+            width: 3px;
+            height: 24px;
+            background: linear-gradient(to top, #f43f5e, #ec4899);
+            transform-origin: bottom;
+            animation: bounceVisualizer 1.2s ease-in-out infinite alternate;
+            border-radius: 9999px;
+        }
+        .wave-bar:nth-child(1) { animation-duration: 0.9s; animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { animation-duration: 1.4s; animation-delay: 0.4s; }
+        .wave-bar:nth-child(3) { animation-duration: 1.1s; animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-duration: 1.3s; animation-delay: 0.5s; }
+        
+        @keyframes bounceVisualizer {
+            0% { transform: scaleY(0.2); }
+            100% { transform: scaleY(1.0); }
+        }
+        .paused-wave .wave-bar {
+            animation-play-state: paused !important;
+            transform: scaleY(0.2) !important;
+            background: #4b5563 !important;
+            transition: transform 0.4s ease, background 0.4s ease;
+        }
+
+        /* --- DANCING CHARACTER ANIMATION (FIXED STATE LOGIC) --- */
+        
     </style>
 </head>
 <body id="bodyTheme" class="min-h-screen bg-gradient-to-tr from-stone-100 via-rose-50 to-amber-100 text-slate-800 antialiased">
 
-    <!-- Hero/Entry Section with Layered Stack -->
-    <header id="heroContainer" class="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+    <audio id="bgMusic" src="song.mp3" loop></audio>
+
+    <div id="floatingPlayer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-1 opacity-0 pointer-events-none transition-all duration-700 transform translate-y-4">
         
-        <!-- Background Layer -->
+        <div class="pr-4 select-none drop-shadow-lg">
+            <div id="dancerCharacter" class="dancing-avatar"></div>
+        </div>
+
+        <div class="bg-neutral-900/90 border border-white/10 backdrop-blur-xl px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-4">
+            <div id="waveVisualizer" class="flex items-end gap-1 h-6 w-6">
+                <span class="wave-bar"></span>
+                <span class="wave-bar"></span>
+                <span class="wave-bar"></span>
+                <span class="wave-bar"></span>
+            </div>
+            
+            <div class="flex flex-col text-left pr-1">
+                <span class="text-xs font-bold text-amber-200 tracking-wide select-none">Background Music</span>
+                <span id="playerStatus" class="text-[10px] text-zinc-400 font-medium select-none tracking-wider">Playing</span>
+            </div>
+
+            <div class="h-6 w-[1px] bg-white/10 mx-0.5"></div>
+
+            <button onclick="toggleMusicPlayback()" id="mediaButton" class="h-8 w-8 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white flex items-center justify-center text-xs shadow-md shadow-rose-500/10 cursor-pointer transform active:scale-95 transition-all">
+                ⏸️
+            </button>
+        </div>
+    </div>
+
+    <header id="heroContainer" class="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
         <div id="heroBgImage" class="absolute inset-0 w-full h-full z-0 transition-all duration-1000">
             <img src="s5.jpg" alt="Aesthetic Background" class="w-full h-full object-cover blur-md scale-105 brightness-75">
             <div class="absolute inset-0 bg-black/10 backdrop-blur-[1px]"></div>
         </div>
         
-        <!-- Content Layer -->
         <div class="relative z-10 flex flex-col items-center justify-center space-y-4 max-w-lg">
             <div id="heroEmoji" class="text-6xl transition-transform duration-300">✨</div>
             
@@ -137,13 +188,11 @@
             </button>
         </div>
 
-        <!-- Scroll Arrow -->
         <div id="scrollArrow" class="hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce text-2xl font-bold text-rose-400 drop-shadow-md">
             ↓ Scroll Down Niche Niche ↓
         </div>
     </header>
 
-    <!-- Fullscreen Transition Image -->
     <section id="fullscreenPhotoSection" class="hidden h-screen w-full relative flex items-center justify-center overflow-hidden border-b border-white/10 opacity-0">
         <img src="s8.jpg" alt="Sanjana Portrait" class="absolute inset-0 w-full h-full object-cover filter brightness-45">
         <div class="relative z-10 text-center px-4 max-w-2xl">
@@ -152,10 +201,8 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <main id="mainContent" class="hidden max-w-5xl mx-auto px-4 py-24 space-y-32">
 
-        <!-- PHOTO MEMORY PILE -->
         <section id="photoGallery" class="reveal-on-scroll relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-2xl border border-white/10 flex flex-col items-center min-h-[650px] justify-center">
             <img src="s7.jpeg" alt="Gallery Background" class="absolute inset-0 w-full h-full object-cover filter brightness-25 blur-sm scale-105 pointer-events-none">
             
@@ -168,7 +215,6 @@
                 </p>
                 
                 <div class="photo-pile-container">
-                    <!-- Photo 1 -->
                     <div class="pile-card" style="transform: rotate(0deg); z-index: 8;" onclick="shuffleCard(this)">
                         <img src="s4.jpg" alt="Memory 1" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -177,7 +223,6 @@
                         </div>
                     </div>
                     
-                    <!-- Photo 2 -->
                     <div class="pile-card" style="transform: rotate(4deg) translate(8px, 4px); z-index: 7;" onclick="shuffleCard(this)">
                         <img src="s11.jpeg" alt="Memory 2" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -186,7 +231,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 3 -->
                     <div class="pile-card" style="transform: rotate(-5deg) translate(-10px, 6px); z-index: 6;" onclick="shuffleCard(this)">
                         <img src="s12.jpeg" alt="Memory 3" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -195,7 +239,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 4 -->
                     <div class="pile-card" style="transform: rotate(3deg) translate(6px, 10px); z-index: 5;" onclick="shuffleCard(this)">
                         <img src="s15.jpg" alt="Memory 4" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -204,7 +247,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 5 -->
                     <div class="pile-card" style="transform: rotate(-3deg) translate(-6px, 12px); z-index: 4;" onclick="shuffleCard(this)">
                         <img src="s14.jpeg" alt="Memory 5" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -213,7 +255,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 6 -->
                     <div class="pile-card" style="transform: rotate(5deg) translate(12px, 8px); z-index: 3;" onclick="shuffleCard(this)">
                         <img src="s13.jpeg" alt="Memory 6" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -222,7 +263,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 7 -->
                     <div class="pile-card" style="transform: rotate(-4deg) translate(-12px, 14px); z-index: 2;" onclick="shuffleCard(this)">
                         <img src="s5.jpg" alt="Memory 7" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -231,7 +271,6 @@
                         </div>
                     </div>
 
-                    <!-- Photo 8 -->
                     <div class="pile-card" style="transform: rotate(2deg) translate(2px, 16px); z-index: 1;" onclick="shuffleCard(this)">
                         <img src="s7.jpeg" alt="Memory 8" class="w-full h-3/4 object-cover rounded-2xl pointer-events-none">
                         <div class="mt-4 text-center">
@@ -243,7 +282,6 @@
             </div>
         </section>
 
-        <!-- CINEMATIC COLLAGE SECTION -->
         <section class="reveal-on-scroll space-y-6">
             <div class="text-center">
                 <h2 class="text-3xl md:text-4xl font-bold text-amber-300 mb-2 drop-shadow-md">
@@ -254,80 +292,42 @@
                 </p>
             </div>
 
-            <!-- Bento Style Mosaic Collage Section with Background Photo -->
             <div class="relative w-full rounded-3xl overflow-hidden bg-cover bg-center p-6 md:p-10 shadow-2xl border border-white/5" 
                  style="background-image: url('s4.jpg');">
-                
-                <!-- Background Dark Blur Overlay -->
                 <div class="absolute inset-0 bg-neutral-950/80 backdrop-blur-md z-0"></div>
-
-                <!-- Main Content Grid -->
                 <div class="relative z-10">
-                    
                     <div class="text-center mb-8">
                         <h3 class="text-2xl md:text-3xl font-serif text-amber-100/90 tracking-wide">Kuch Unkahe Pal</h3>
                         <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-amber-200/50 to-transparent mx-auto mt-2"></div>
                     </div>
 
-                    <!-- Grid Container -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[220px] md:auto-rows-[280px]">
-                        
-                        <!-- Collage Photo 1 (Big Featured Card) -->
                         <div class="relative col-span-2 row-span-2 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s7.jpeg" alt="Collage 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <p class="text-amber-200 text-sm font-medium">Capture the warmth ✨</p>
-                            </div>
                         </div>
-
-                        <!-- Collage Photo 2 (Vertical Card) -->
                         <div class="relative col-span-1 row-span-2 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s10.jpg" alt="Collage 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <p class="text-amber-200 text-sm font-medium">Unspoken lines 🕊️</p>
-                            </div>
                         </div>
-
-                        <!-- Collage Photo 3 (Square Card) -->
                         <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s5.jpg" alt="Collage 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <p class="text-amber-200 text-sm font-medium">Memories 💫</p>
-                            </div>
                         </div>
-
-                        <!-- Photo 7 -->
                         <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s11.jpeg" alt="New Memory 7" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <p class="text-amber-200 text-sm font-medium">Another chapter 📖</p>
-                            </div>
                         </div>
-
-                        <!-- Collage Photo 4 -->
                         <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s6.jpeg" alt="Collage 4" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
                         </div>
-
-                        <!-- Collage Photo 5 (Horizontal Landscape Card) -->
                         <div class="relative col-span-2 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s9.jpg" alt="Collage 5" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <p class="text-amber-200 text-sm font-medium">Laughs & Melodies 🎵</p>
-                            </div>
                         </div>
-
-                        <!-- Collage Photo 6 -->
                         <div class="relative col-span-1 row-span-1 group overflow-hidden rounded-3xl border border-white/10 shadow-lg">
                             <img src="s15.jpg" alt="Collage 6" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 brightness-90 contrast-105">
                         </div>
-
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- INTERACTIVE APOLOGY & BIRTHDAY ENVELOPE SECTION -->
         <section class="reveal-on-scroll max-w-lg mx-auto text-center space-y-6">
             <div class="envelope-wrapper" onclick="toggleEnvelope()">
                 <div id="envelopeCard" class="envelope-card rounded-3xl p-8 shadow-2xl border flex flex-col items-center justify-center space-y-4 min-h-[180px]">
@@ -337,15 +337,9 @@
                 </div>
             </div>
             
-            <!-- Hidden Letter Content with Background Photo -->
-            <!-- Note: 's12.jpeg' ki jagah aap koi bhi preferred deep/moody image path de sakte hain -->
             <div id="letterContent" class="hidden relative max-w-md mx-auto bg-cover bg-center border border-white/10 rounded-3xl overflow-hidden text-left shadow-xl fade-scale-in"
                  style="background-image: url('s12.jpeg');">
-                
-                <!-- Dark Overlay for readability inside the letter -->
                 <div class="absolute inset-0 bg-neutral-950/85 backdrop-blur-sm z-0"></div>
-                
-                <!-- Letter Inner Content Layer -->
                 <div class="relative z-10 p-8 space-y-4 flex flex-col">
                     <span class="text-xs tracking-widest text-rose-300 uppercase font-bold">Dear Sanjana,</span>
                     <p class="text-white/90 text-sm leading-relaxed">
@@ -364,18 +358,10 @@
             </div>
         </section>
 
-        <!-- DYNAMIC QUIZ & SURPRISE CONTAINER -->
         <section id="interactiveZone" class="reveal-on-scroll max-w-md mx-auto min-h-[340px] flex flex-col justify-center relative">
-            
-            <!-- 1. Pure Quiz State with Background Photo -->
-            <!-- Note: 's5.jpg' ki jagah aap koi bhi unique background image laga sakte hain -->
             <div id="quizBlock" class="relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 text-center transition-all duration-500 w-full"
                  style="background-image: url('s5.jpg');">
-                
-                <!-- Dark Blur Overlay for Quiz content readability -->
                 <div class="absolute inset-0 bg-neutral-950/75 backdrop-blur-sm z-0"></div>
-                
-                <!-- Content Layer -->
                 <div class="relative z-10 p-8 space-y-4 flex flex-col">
                     <h2 class="text-2xl md:text-3xl font-bold text-amber-300 mb-2 flex items-center justify-center gap-2">
                         ❓ Quick Trivia
@@ -392,7 +378,6 @@
                 </div>
             </div>
 
-            <!-- 2. Playful Retry State with Background Photo (Inherits layout for consistency) -->
             <div id="retryBlock" class="hidden relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 text-center w-full fade-scale-in"
                  style="background-image: url('s5.jpg');">
                 <div class="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm z-0"></div>
@@ -406,7 +391,6 @@
                 </div>
             </div>
 
-            <!-- 3. NAVEEN'S SURPRISE GIFT BLOCK with Background Photo -->
             <div id="surpriseGiftBlock" class="hidden relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl border-2 border-pink-400/50 text-center w-full"
                  style="background-image: url('s8.jpg');">
                 <div class="absolute inset-0 bg-gradient-to-b from-rose-950/85 to-purple-950/85 backdrop-blur-sm z-0"></div>
@@ -417,24 +401,16 @@
                     <p class="text-lg text-white font-semibold leading-relaxed tracking-wide px-1">
                         Aur Naveen ke paas aapke liye ek aur <span class="text-pink-300 underline decoration-wavy font-bold">surprise gift</span> hai... 😉✨
                     </p>
-                    <p class="text-xs text-pink-200/60 font-light italic">
-                        (Ab gussa thanda karo aur gift maang lo!)
-                    </p>
                 </div>
             </div>
-
         </section>
-
     </main>
 
-    <!-- Footer -->
     <footer id="footerText" class="text-center py-12 text-sm text-slate-400 transition-colors duration-500">
         Made with ❤️ for Sanjana by Para | 2026
     </footer>
 
-    <!-- JavaScript code -->
     <script>
-        // Track lowest z-index dynamically for 8 cards
         let currentLowestZ = 1; 
         
         function shuffleCard(card) {
@@ -457,19 +433,15 @@
             if(letterContent.classList.contains('hidden')) {
                 envelopeCard.classList.add('open');
                 envelopeEmoji.innerText = "📂📩";
-                envelopeEmoji.style.transform = "scale(1.1) rotate(-5deg)";
                 envelopeTitle.innerText = "Letter Opened";
                 envelopeHint.innerText = "(Scroll down to read)";
-                
                 letterContent.classList.remove('hidden');
                 confetti({ particleCount: 30, spread: 40, colors: ['#fda4af', '#fcd34d'] });
             } else {
                 envelopeCard.classList.remove('open');
                 envelopeEmoji.innerText = "✉️";
-                envelopeEmoji.style.transform = "none";
                 envelopeTitle.innerText = "A small letter for you...";
                 envelopeHint.innerText = "(Click to open the note)";
-                
                 letterContent.classList.add('hidden');
             }
         }
@@ -477,16 +449,13 @@
         function checkQuizAnswer() {
             const inputField = document.getElementById('quizInput');
             const feedback = document.getElementById('quizFeedback');
-            
             const quizBlock = document.getElementById('quizBlock');
             const retryBlock = document.getElementById('retryBlock');
             const surpriseGiftBlock = document.getElementById('surpriseGiftBlock');
             const interactiveZone = document.getElementById('interactiveZone');
-            
             const userAnswer = inputField.value.trim().toLowerCase();
 
             interactiveZone.classList.remove('shake-effect');
-
             if (userAnswer === "") {
                 feedback.innerText = "Kuch toh likho! 😂";
                 return;
@@ -496,7 +465,6 @@
 
             if (correctAnswers.includes(userAnswer)) {
                 quizBlock.classList.add('fade-scale-out');
-                
                 setTimeout(() => {
                     quizBlock.classList.add('hidden');
                     surpriseGiftBlock.classList.remove('hidden');
@@ -509,11 +477,9 @@
                         if (Date.now() < end) { requestAnimationFrame(frame); }
                     }());
                 }, 500);
-
             } else {
                 quizBlock.classList.add('hidden');
                 retryBlock.classList.remove('hidden');
-                
                 setTimeout(() => {
                     interactiveZone.style.animation = 'none';
                     interactiveZone.offsetHeight; 
@@ -530,10 +496,32 @@
 
             inputField.value = "";
             feedback.innerText = "";
-            
             quizBlock.classList.remove('fade-scale-out', 'hidden');
             retryBlock.classList.add('hidden');
             inputField.focus();
+        }
+
+        // --- PLAY/PAUSE INTERACTION HANDLING FOR BOTH WAVE AND AVATAR ---
+        function toggleMusicPlayback() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('mediaButton');
+            const statusText = document.getElementById('playerStatus');
+            const wave = document.getElementById('waveVisualizer');
+            const dancer = document.getElementById('dancerCharacter');
+
+            if (music.paused) {
+                music.play().catch(err => console.log(err));
+                btn.innerText = "⏸️";
+                statusText.innerText = "Playing";
+                wave.classList.remove('paused-wave');
+                dancer.classList.remove('paused-avatar');
+            } else {
+                music.pause();
+                btn.innerText = "▶️";
+                statusText.innerText = "Paused";
+                wave.classList.add('paused-wave');
+                dancer.classList.add('paused-avatar');
+            }
         }
 
         function revealCelebration() {
@@ -549,6 +537,17 @@
             const arrow = document.getElementById('scrollArrow');
             const footer = document.getElementById('footerText');
             const heroBgImage = document.getElementById('heroBgImage');
+            
+            const player = document.getElementById('floatingPlayer');
+
+            const music = document.getElementById('bgMusic');
+            if (music) {
+                music.volume = 0.4;
+                music.play().then(() => {
+                    player.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    player.classList.add('opacity-100', 'translate-y-0');
+                }).catch(error => console.log("Audio play blocked: ", error));
+            }
 
             if(heroBgImage) {
                 heroBgImage.style.opacity = "0.12";
@@ -557,7 +556,6 @@
 
             body.classList.remove('from-stone-100', 'via-rose-50', 'to-amber-100', 'text-slate-800');
             body.classList.add('from-stone-950', 'via-neutral-900', 'to-neutral-950', 'text-white');
-
             hero.classList.add('bg-black/60');
 
             heading.innerText = "Happy Birthday Sanjana (Cinderella Ji) 🎈";
@@ -570,22 +568,16 @@
 
             emoji.innerText = "🎂";
             emoji.classList.add('animate-bounce');
-
-            footer.classList.remove('text-slate-400');
             footer.classList.add('text-white/20');
 
             button.innerText = "Opened ✨";
-            button.classList.remove('from-rose-500', 'to-amber-600', 'hover:from-rose-600', 'hover:to-amber-700');
-            button.classList.add('bg-white/10', 'text-white/30', 'cursor-not-allowed');
             button.disabled = true;
 
             fullscreenSection.classList.remove('hidden');
             mainContent.classList.remove('hidden');
             arrow.classList.remove('hidden');
             
-            setTimeout(() => {
-                fullscreenSection.style.opacity = "1";
-            }, 100);
+            setTimeout(() => { fullscreenSection.style.opacity = "1"; }, 100);
 
             confetti({ particleCount: 120, spread: 80, origin: { x: 0.1, y: 0.7 } });
             confetti({ particleCount: 120, spread: 80, origin: { x: 0.9, y: 0.7 } });
@@ -594,11 +586,7 @@
         }
 
         function initScrollObserver() {
-            const observerOptions = {
-                root: null,
-                threshold: 0.12
-            };
-
+            const observerOptions = { root: null, threshold: 0.12 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -609,7 +597,6 @@
                     }
                 });
             }, observerOptions);
-
             document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
         }
     </script>
